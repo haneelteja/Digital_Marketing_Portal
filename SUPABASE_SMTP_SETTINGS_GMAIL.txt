@@ -1,0 +1,55 @@
+==========================================
+SUPABASE SMTP SETTINGS FOR GMAIL
+==========================================
+
+Go to: Supabase Dashboard → Authentication → Emails → SMTP Settings
+
+Enable Custom SMTP: ✅ ON
+
+Host: smtp.gmail.com
+
+Port: 465
+
+Username: pega2023test@gmail.com
+
+Password: rgdj heuh ycpu cqyh
+(Note: You can enter with or without spaces - both work)
+
+Sender email: pega2023test@gmail.com
+
+Sender name: Digital Marketing Portal
+
+==========================================
+IMPORTANT NOTES:
+==========================================
+
+1. Make sure you're using the App Password (not your regular Gmail password)
+2. The App Password is: rgdj heuh ycpu cqyh
+3. After saving, Supabase will test the connection automatically
+4. If connection fails, verify:
+   - 2-Step Verification is enabled on your Gmail account
+   - You're using the App Password (not regular password)
+   - Port 465 is not blocked by firewall
+
+==========================================
+TESTING:
+==========================================
+
+After configuring Supabase SMTP:
+1. Go to login page
+2. Click "Forgot Password"
+3. Enter an email address
+4. Check Supabase Auth Logs for success
+5. Check email inbox (and spam folder)
+
+You can also test the application SMTP with:
+npm run test:smtp
+
+==========================================
+
+
+
+
+
+
+
