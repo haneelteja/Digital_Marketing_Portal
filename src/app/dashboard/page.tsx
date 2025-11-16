@@ -369,19 +369,47 @@ function DashboardPage() {
 		setIsMounted(true);
 		isMountedRef.current = true;
 		
+		// Add timeout to prevent infinite loading
+		const loadingTimeout = setTimeout(() => {
+			if (loading) {
+				console.error('Dashboard loading timeout - check environment variables and network connection');
+				setLoading(false);
+			}
+		}, 10000); // 10 second timeout
+		
 		async function loadUser() {
 			try {
+				// Check if Supabase is properly configured
+				const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
+				const supabaseKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
+				
+				if (!supabaseUrl || supabaseUrl.includes('placeholder') || 
+				    !supabaseKey || supabaseKey.includes('placeholder')) {
+					console.error('⚠️ Supabase environment variables are not configured in Vercel!');
+					console.error('Please configure NEXT_PUBLIC_SUPABASE_URL and NEXT_PUBLIC_SUPABASE_ANON_KEY in Vercel project settings.');
+					setUser(null);
+					setEmail('');
+					setLoading(false);
+					return;
+				}
+				
 				const { data: { user }, error } = await supabase.auth.getUser();
 				
 				if (error) {
 					console.error('Error getting user:', error);
 					// If there's an auth error, show login prompt instead of redirecting
 					if (error.message?.includes('AuthSessionMissingError') || 
-						error.message?.includes('session missing')) {
-                        // noop
+						error.message?.includes('session missing') ||
+						error.message?.includes('JWT') ||
+						error.message?.includes('Invalid API key')) {
+						console.error('Authentication error:', error.message);
 						setUser(null);
 						setEmail('');
 						setLoading(false);
+						// Redirect to login if session is invalid
+						if (error.message?.includes('Invalid API key') || error.message?.includes('JWT')) {
+							window.location.href = '/login';
+						}
 						return;
 					}
 				}
@@ -482,12 +510,19 @@ function DashboardPage() {
 				}
 			} catch (err) {
 				console.error('Error in loadUser:', err);
+				const error = err as Error;
+				console.error('Error details:', {
+					message: error.message,
+					name: error.name,
+					stack: error.stack
+				});
 				setUser(null);
 				setCurrentUser(null);
 				setEmail('');
 			} finally {
 				// Always set loading to false, even if there's an error
 				setLoading(false);
+				clearTimeout(loadingTimeout);
 			}
 		}
 
