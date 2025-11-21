@@ -1,4 +1,4 @@
-# Digital Marketing Portal - Deployment Guide
+# Digital Marketing Portal
 
 ## 🚀 Quick Start
 
